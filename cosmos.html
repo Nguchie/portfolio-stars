@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 35%, #0f0f23 100%);
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            cursor: none;
+        }
+
+        #canvas {
+            display: block;
+            background: transparent;
+        }
+
+        .ui {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .constellation-label {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .constellation-label.visible {
+            opacity: 1;
+        }
+
+        .project-panel {
+            position: absolute;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            color: white;
+            opacity: 0;
+            transition: all 0.5s ease;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .project-panel.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .project-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #64ffda;
+        }
+
+        .project-description {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tech-tag {
+            background: rgba(100, 255, 218, 0.2);
+            color: #64ffda;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+        }
+
+        .project-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: transform 0.3s ease;
+        }
+
+        .project-link:hover {
+            transform: translateY(-2px);
+        }
+
+        .navigation-hint {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .cosmic-dust {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(-50px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+        }
+
+        /* Contact Button Styles */
+        .contact-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            pointer-events: all;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .contact-button:hover {
+            transform: scale(1.1);
+        }
+
+        .contact-button i {
+            position: relative;
+            z-index: 2;
+        }
+
+        .blackhole-effect {
+            position: absolute;
+            width: 0;
+            height: 0;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .contact-button.active .blackhole-effect {
+            width: 300px;
+            height: 300px;
+        }
+
+        .contact-button.active i {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Back Button Styles */
+        .back-button {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            pointer-events: all;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="ui">
+        <div class="navigation-hint">Move your cursor to explore the cosmos</div>
+        
+        <div class="constellation-label" id="frontend-label">Frontend Nebula</div>
+        <div class="constellation-label" id="backend-label">Backend Galaxy</div>
+        <div class="constellation-label" id="mobile-label">Mobile Cluster</div>
+        <div class="constellation-label" id="devops-label">DevOps Constellation</div>
+        <div class="constellation-label" id="ai-label">AI Constellation</div>
+        <div class="constellation-label" id="tools-label">DevTools Sector</div>
+        
+        <div class="project-panel" id="project-panel">
+            <div class="project-title" id="project-title">Project Name</div>
+            <div class="project-description" id="project-description">Project description goes here</div>
+            <div class="project-tech" id="project-tech"></div>
+            <a href="#" class="project-link" id="project-link">View Project</a>
+        </div>
+    </div>
+
+    <!-- Contact Button -->
+    <div class="contact-button" id="contactButton">
+        <i class="fas fa-envelope"></i>
+        <div class="blackhole-effect"></div>
+    </div>
+
+    <!-- Back Button -->
+    <a href="index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
+        
+        // Player orb
+        const player = {
+            x: 0,
+            y: 0,
+            targetX: 0,
+            targetY: 0,
+            size: 8,
+            trail: []
+        };
+
+        // Constellation data with projects
+        const constellations = [
+            {
+                name: 'frontend',
+                label: 'Frontend Nebula',
+                x: 0.2,
+                y: 0.3,
+                color: '#64ffda',
+                projects: [
+                    {
+                        name: 'Dove Real Estate',
+                        description: 'Full-featured real estate platform with property listings, search filters, and agent management system.',
+                        tech: ['React', 'Next.js', 'Tailwind CSS', 'Firebase'],
+                        link: 'https://doverealestateltd.com',
+                        stars: [
+                            { x: 0.18, y: 0.25, brightness: 0 },
+                            { x: 0.22, y: 0.28, brightness: 0 },
+                            { x: 0.19, y: 0.32, brightness: 0 },
+                            { x: 0.23, y: 0.35, brightness: 0 }
+                        ]
+                    },
+                    {
+                        name: 'SSN Kitchen',
+                        description: 'E-commerce platform for kitchen equipment with cart functionality and payment integration.',
+                        tech: ['React', 'Express.js', 'MongoDB', 'Stripe API'],
+                        link: 'https://ssnkitchen.com',
+                        stars: [
+                            { x: 0.16, y: 0.29, brightness: 0 },
+                            { x: 0.21, y: 0.31, brightness: 0 },
+                            { x: 0.24, y: 0.27, brightness: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: 'backend',
+                label: 'Backend Galaxy',
+                x: 0.7,
+                y: 0.4,
+                color: '#ff6b9d',
+                projects: [
+                    {
+                        name: 'Microservices API',
+                        description: 'Scalable REST API built with Django and Docker, handling millions of requests with Redis caching.',
+                        tech: ['Django', 'Express', 'MongoDB', 'Mysql', 'Redis', 'Docker'],
+                        link: '#',
+                        stars: [
+                            { x: 0.68, y: 0.35, brightness: 0 },
+                            { x: 0.72, y: 0.38, brightness: 0 },
+                            { x: 0.69, y: 0.42, brightness: 0 },
+                            { x: 0.74, y: 0.41, brightness: 0 },
+                            { x: 0.71, y: 0.45, brightness: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: 'mobile',
+                label: 'Mobile Cluster',
+                x: 0.5,
+                y: 0.7,
+                color: '#ffd93d',
+                projects: [
+                    {
+                        name: 'BP Management System',
+                        description: 'Flutter mobile app with Django backend for tracking and analyzing blood pressure metrics.',
+                        tech: ['Flutter', 'Django REST', 'SQLite', 'Chart.js'],
+                        link: '#',
+                        stars: [
+                            { x: 0.47, y: 0.67, brightness: 0 },
+                            { x: 0.52, y: 0.69, brightness: 0 },
+                            { x: 0.49, y: 0.73, brightness: 0 },
+                            { x: 0.53, y: 0.72, brightness: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: 'ai',
+                label: 'AI Constellation',
+                x: 0.8,
+                y: 0.2,
+                color: '#a78bfa',
+                projects: [
+                    {
+                        name: 'Smart Recommendation Engine',
+                        description: 'Machine learning system for personalized content recommendations using collaborative filtering.',
+                        tech: ['Python', 'TensorFlow', 'Pandas', 'FastAPI'],
+                        link: '#',
+                        stars: [
+                            { x: 0.77, y: 0.17, brightness: 0 },
+                            { x: 0.82, y: 0.19, brightness: 0 },
+                            { x: 0.79, y: 0.22, brightness: 0 },
+                            { x: 0.83, y: 0.24, brightness: 0 }
+                        ]
+                    }
+                ]
+            },
+           {
+    name: 'devops',
+    label: 'DevOps Constellation',
+    x: 0.3,  // Changed from 0.8
+    y: 0.8,  // Changed from 0.2
+    color: '#ff9e64',  // Changed color to orange to distinguish from AI
+    projects: [
+        {
+            name: 'Cloud Security Projects',
+            description: 'Various cloud security implementations including IAM policies and network security configurations.',
+            tech: ['AWS', 'Terraform', 'Docker', 'Kubernetes'],
+            link: '#',
+            stars: [
+                { x: 0.27, y: 0.77, brightness: 0 },  // Adjusted star positions
+                { x: 0.32, y: 0.79, brightness: 0 },
+                { x: 0.29, y: 0.83, brightness: 0 }
+            ]
+        }
+    ]
+},
+            
+            {
+                name: 'tools',
+                label: 'DevTools Sector',
+                x: 0.3,
+                y: 0.6,
+                color: '#6ee7b7',
+                projects: [
+                    {
+                        name: 'Build Optimizer',
+                        description: 'Custom tools for automating business processes and data management.',
+                        tech: ['Python', 'Bash', 'CI/CD', 'Git'],
+                        link: '#',
+                        stars: [
+                            { x: 0.27, y: 0.57, brightness: 0 },
+                            { x: 0.32, y: 0.59, brightness: 0 },
+                            { x: 0.29, y: 0.63, brightness: 0 }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // Background stars
+        const backgroundStars = [];
+        let activeProjectStar = null;
+        
+        function init() {
+            resizeCanvas();
+            
+            // Generate background stars
+            for (let i = 0; i < 200; i++) {
+                backgroundStars.push({
+                    x: Math.random(),
+                    y: Math.random(),
+                    brightness: Math.random() * 0.5 + 0.2,
+                    twinkle: Math.random() * 0.02 + 0.01,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+            
+            // Initialize player position
+            player.x = player.targetX = width * 0.5;
+            player.y = player.targetY = height * 0.5;
+            
+            // Generate cosmic dust
+            for (let i = 0; i < 30; i++) {
+                createCosmicDust();
+            }
+            
+            // Setup contact button
+            const contactButton = document.getElementById('contactButton');
+            contactButton.addEventListener('click', function() {
+                this.classList.add('active');
+                
+                setTimeout(() => {
+                    window.location.href = 'mailto:nguchiea@gmail.com';
+                }, 500);
+                
+                setTimeout(() => {
+                    this.classList.remove('active');
+                }, 1000);
+            });
+            
+            animate();
+        }
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            
+            // Update constellation label positions
+            constellations.forEach(constellation => {
+                const label = document.getElementById(constellation.name + '-label');
+                if (label) {
+                    label.style.left = (constellation.x * width - 60) + 'px';
+                    label.style.top = (constellation.y * height - 40) + 'px';
+                }
+            });
+        }
+
+        function createCosmicDust() {
+            const dust = document.createElement('div');
+            dust.className = 'cosmic-dust';
+            dust.style.left = Math.random() * window.innerWidth + 'px';
+            dust.style.animationDelay = Math.random() * 20 + 's';
+            dust.style.animationDuration = (Math.random() * 10 + 15) + 's';
+            document.body.appendChild(dust);
+            
+            setTimeout(() => {
+                if (dust.parentNode) {
+                    dust.parentNode.removeChild(dust);
+                    createCosmicDust();
+                }
+            }, 25000);
+        }
+
+        function drawStar(x, y, size, brightness, color = '#ffffff') {
+            const actualX = x * width;
+            const actualY = y * height;
+            
+            ctx.save();
+            ctx.globalAlpha = brightness;
+            
+            // Outer glow
+            const gradient = ctx.createRadialGradient(actualX, actualY, 0, actualX, actualY, size * 3);
+            gradient.addColorStop(0, color);
+            gradient.addColorStop(1, 'transparent');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(actualX - size * 3, actualY - size * 3, size * 6, size * 6);
+            
+            // Core star
+            ctx.globalAlpha = brightness;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(actualX, actualY, size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Star spikes
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = brightness * 0.8;
+            
+            ctx.beginPath();
+            ctx.moveTo(actualX - size * 2, actualY);
+            ctx.lineTo(actualX + size * 2, actualY);
+            ctx.moveTo(actualX, actualY - size * 2);
+            ctx.lineTo(actualX, actualY + size * 2);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        function drawConnectionLines(constellation, activeProject) {
+            if (!activeProject) return;
+            
+            ctx.save();
+            ctx.strokeStyle = constellation.color;
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.3;
+            
+            const centerX = constellation.x * width;
+            const centerY = constellation.y * height;
+            
+            activeProject.stars.forEach(star => {
+                if (star.brightness > 0.1) {
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(star.x * width, star.y * height);
+                    ctx.stroke();
+                }
+            });
+            
+            ctx.restore();
+        }
+
+        function drawPlayer() {
+            // Trail
+            ctx.save();
+            player.trail.forEach((point, index) => {
+                const alpha = (index / player.trail.length) * 0.5;
+                const size = (index / player.trail.length) * player.size;
+                
+                const gradient = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, size * 2);
+                gradient.addColorStop(0, `rgba(100, 255, 218, ${alpha})`);
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(point.x - size * 2, point.y - size * 2, size * 4, size * 4);
+            });
+            ctx.restore();
+            
+            // Player orb
+            ctx.save();
+            
+            // Outer glow
+            const outerGradient = ctx.createRadialGradient(player.x, player.y, 0, player.x, player.y, player.size * 4);
+            outerGradient.addColorStop(0, 'rgba(100, 255, 218, 0.8)');
+            outerGradient.addColorStop(0.5, 'rgba(100, 255, 218, 0.3)');
+            outerGradient.addColorStop(1, 'transparent');
+            
+            ctx.fillStyle = outerGradient;
+            ctx.fillRect(player.x - player.size * 4, player.y - player.size * 4, player.size * 8, player.size * 8);
+            
+            // Inner orb
+            const innerGradient = ctx.createRadialGradient(player.x, player.y, 0, player.x, player.y, player.size);
+            innerGradient.addColorStop(0, '#ffffff');
+            innerGradient.addColorStop(0.3, '#64ffda');
+            innerGradient.addColorStop(1, 'rgba(100, 255, 218, 0.8)');
+            
+            ctx.fillStyle = innerGradient;
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+
+        function updateStarBrightness() {
+            activeProjectStar = null;
+            let maxBrightness = 0;
+            
+            constellations.forEach(constellation => {
+                constellation.projects.forEach(project => {
+                    project.stars.forEach(star => {
+                        const starX = star.x * width;
+                        const starY = star.y * height;
+                        const distance = Math.sqrt(Math.pow(player.x - starX, 2) + Math.pow(player.y - starY, 2));
+                        
+                        if (distance < 100) {
+                            star.brightness = Math.min(1, star.brightness + 0.03);
+                            if (star.brightness > maxBrightness) {
+                                maxBrightness = star.brightness;
+                                activeProjectStar = { star, project, constellation };
+                            }
+                        } else {
+                            star.brightness = Math.max(0, star.brightness - 0.02);
+                        }
+                    });
+                });
+            });
+            
+            return activeProjectStar;
+        }
+
+        function checkConstellationProximity() {
+            let activeConstellation = null;
+            
+            constellations.forEach(constellation => {
+                const constX = constellation.x * width;
+                const constY = constellation.y * height;
+                const distance = Math.sqrt(Math.pow(player.x - constX, 2) + Math.pow(player.y - constY, 2));
+                
+                const label = document.getElementById(constellation.name + '-label');
+                
+                if (distance < 150) {
+                    label.classList.add('visible');
+                    activeConstellation = constellation;
+                } else {
+                    label.classList.remove('visible');
+                }
+            });
+            
+            return activeConstellation;
+        }
+
+        function showProjectPanel(project, constellation, star) {
+            const panel = document.getElementById('project-panel');
+            const starX = star.x * width;
+            const starY = star.y * height;
+            
+            // Position the panel near the star but ensure it stays within viewport
+            let panelLeft = starX + 30;
+            let panelTop = starY - 150;
+            
+            // Adjust if panel would go off screen right
+            if (panelLeft + 300 > width) {
+                panelLeft = starX - 330;
+            }
+            
+            // Adjust if panel would go off screen top
+            if (panelTop < 20) {
+                panelTop = starY + 30;
+            }
+            
+            // Adjust if panel would go off screen bottom
+            if (panelTop + 250 > height) {
+                panelTop = height - 250;
+            }
+            
+            panel.style.left = panelLeft + 'px';
+            panel.style.top = panelTop + 'px';
+            
+            document.getElementById('project-title').textContent = project.name;
+            document.getElementById('project-description').textContent = project.description;
+            document.getElementById('project-link').href = project.link;
+            
+            const techContainer = document.getElementById('project-tech');
+            techContainer.innerHTML = '';
+            project.tech.forEach(tech => {
+                const tag = document.createElement('span');
+                tag.className = 'tech-tag';
+                tag.textContent = tech;
+                techContainer.appendChild(tag);
+            });
+            
+            panel.classList.add('visible');
+        }
+
+        function hideProjectPanel() {
+            const panel = document.getElementById('project-panel');
+            panel.classList.remove('visible');
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(10, 10, 35, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Update player position
+            player.targetX += (mouseX - player.targetX) * 0.05;
+            player.targetY += (mouseY - player.targetY) * 0.05;
+            
+            player.x += (player.targetX - player.x) * 0.1;
+            player.y += (player.targetY - player.y) * 0.1;
+            
+            // Update trail
+            player.trail.push({ x: player.x, y: player.y });
+            if (player.trail.length > 15) {
+                player.trail.shift();
+            }
+            
+            // Draw background stars
+            backgroundStars.forEach(star => {
+                star.phase += star.twinkle;
+                const brightness = star.brightness + Math.sin(star.phase) * 0.2;
+                drawStar(star.x, star.y, 1, brightness);
+            });
+            
+            // Update and check interactions
+            const activeStar = updateStarBrightness();
+            const activeConstellation = checkConstellationProximity();
+            
+            // Show project panel for active star
+            if (activeStar && activeStar.star.brightness > 0.5) {
+                showProjectPanel(activeStar.project, activeStar.constellation, activeStar.star);
+            } else {
+                hideProjectPanel();
+            }
+            
+            // Draw constellations
+            constellations.forEach(constellation => {
+                // Draw constellation center
+                drawStar(constellation.x, constellation.y, 4, 0.8, constellation.color);
+                
+                // Draw projects and stars
+                constellation.projects.forEach(project => {
+                    project.stars.forEach(star => {
+                        drawStar(star.x, star.y, 2, star.brightness, constellation.color);
+                    });
+                });
+                
+                // Draw connection lines for active constellation
+                if (activeConstellation === constellation) {
+                    constellation.projects.forEach(project => {
+                        drawConnectionLines(constellation, project);
+                    });
+                }
+            });
+            
+            drawPlayer();
+            requestAnimationFrame(animate);
+        }
+
+        // Event listeners
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Touch support
+        window.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            mouseX = e.touches[0].clientX;
+            mouseY = e.touches[0].clientY;
+        });
+
+        init();
+    </script>
+</body>
+</html>
