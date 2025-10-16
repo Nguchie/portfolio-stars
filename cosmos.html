@@ -12,7 +12,7 @@
         }
 
         body {
-            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 35%, #0f0f23 100%);
+            background: radial-gradient(ellipse at center, #f8fafc 0%, #e2e8f0 35%, #cbd5e1 100%);
             overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             height: 100vh;
@@ -36,15 +36,15 @@
 
         .constellation-label {
             position: absolute;
-            color: rgba(255, 255, 255, 0.8);
+            color: #1e293b;
             font-size: 18px;
-            font-weight: 300;
+            font-weight: 600;
             letter-spacing: 2px;
             text-transform: uppercase;
             opacity: 0;
             transition: opacity 0.5s ease;
             pointer-events: none;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .constellation-label.visible {
@@ -54,16 +54,17 @@
         .project-panel {
             position: absolute;
             width: 300px;
-            background: rgba(0, 0, 0, 0.7);
+            background: #ffffff;
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid #e2e8f0;
             border-radius: 15px;
             padding: 25px;
-            color: white;
+            color: #1e293b;
             opacity: 0;
             transition: all 0.5s ease;
             pointer-events: none;
             z-index: 20;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         }
 
         .project-panel.visible {
@@ -75,14 +76,14 @@
             font-size: 20px;
             font-weight: 600;
             margin-bottom: 10px;
-            color: #64ffda;
+            color: #3b82f6;
         }
 
         .project-description {
             font-size: 14px;
             line-height: 1.6;
             margin-bottom: 15px;
-            color: rgba(255, 255, 255, 0.8);
+            color: #475569;
         }
 
         .project-tech {
@@ -93,17 +94,17 @@
         }
 
         .tech-tag {
-            background: rgba(100, 255, 218, 0.2);
-            color: #64ffda;
+            background: #eff6ff;
+            color: #3b82f6;
             padding: 4px 12px;
             border-radius: 12px;
             font-size: 12px;
-            border: 1px solid rgba(100, 255, 218, 0.3);
+            border: 1px solid #dbeafe;
         }
 
         .project-link {
             display: inline-block;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
@@ -111,6 +112,7 @@
             font-size: 14px;
             font-weight: 500;
             transition: transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
         .project-link:hover {
@@ -121,7 +123,7 @@
             position: absolute;
             top: 30px;
             left: 30px;
-            color: rgba(255, 255, 255, 0.6);
+            color: #475569;
             font-size: 14px;
             animation: pulse 2s infinite;
         }
@@ -155,7 +157,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -164,7 +166,7 @@
             cursor: pointer;
             z-index: 100;
             pointer-events: all;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
             transition: all 0.3s ease;
             overflow: hidden;
         }
@@ -209,7 +211,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -218,7 +220,7 @@
             cursor: pointer;
             z-index: 100;
             pointer-events: all;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
             transition: all 0.3s ease;
             overflow: hidden;
             text-decoration: none;
@@ -239,9 +241,6 @@
         <div class="constellation-label" id="frontend-label">Frontend Nebula</div>
         <div class="constellation-label" id="backend-label">Backend Galaxy</div>
         <div class="constellation-label" id="mobile-label">Mobile Cluster</div>
-        <div class="constellation-label" id="devops-label">DevOps Constellation</div>
-        <div class="constellation-label" id="ai-label">AI Constellation</div>
-        <div class="constellation-label" id="tools-label">DevTools Sector</div>
         
         <div class="project-panel" id="project-panel">
             <div class="project-title" id="project-title">Project Name</div>
@@ -292,7 +291,7 @@
                         name: 'Dove Real Estate',
                         description: 'Full-featured real estate platform with property listings, search filters, and agent management system.',
                         tech: ['React', 'Next.js', 'Tailwind CSS', 'Firebase'],
-                        link: 'https://doverealestateltd.com',
+                        link: 'https://doverealestate.com',
                         stars: [
                             { x: 0.18, y: 0.25, brightness: 0 },
                             { x: 0.22, y: 0.28, brightness: 0 },
@@ -309,6 +308,50 @@
                             { x: 0.16, y: 0.29, brightness: 0 },
                             { x: 0.21, y: 0.31, brightness: 0 },
                             { x: 0.24, y: 0.27, brightness: 0 }
+                        ]
+                    },
+                    {
+                        name: 'Barizi Gardens Resort',
+                        description: 'Comprehensive resort website with interactive booking system, gallery showcase, and amenities information.',
+                        tech: ['React', 'Node.js', 'CSS3', 'Booking System'],
+                        link: 'https://barizigardensresort.co.ke',
+                        stars: [
+                            { x: 0.15, y: 0.26, brightness: 0 },
+                            { x: 0.20, y: 0.24, brightness: 0 },
+                            { x: 0.17, y: 0.30, brightness: 0 }
+                        ]
+                    },
+                    {
+                        name: 'Silver Grafix',
+                        description: 'Portfolio website for graphic design agency with dynamic project showcase and client testimonials.',
+                        tech: ['HTML5', 'CSS3', 'JavaScript', 'GSAP'],
+                        link: 'https://silvergrafix.co.ke',
+                        stars: [
+                            { x: 0.14, y: 0.33, brightness: 0 },
+                            { x: 0.19, y: 0.35, brightness: 0 },
+                            { x: 0.16, y: 0.37, brightness: 0 }
+                        ]
+                    },
+                    {
+                        name: 'Stage FX',
+                        description: 'Professional website for stage production company with portfolio and equipment rental system.',
+                        tech: ['React', 'Next.js', 'Cloudflare', 'Video Optimization'],
+                        link: 'https://stagefx.us',
+                        stars: [
+                            { x: 0.21, y: 0.26, brightness: 0 },
+                            { x: 0.25, y: 0.29, brightness: 0 },
+                            { x: 0.23, y: 0.33, brightness: 0 }
+                        ]
+                    },
+                    {
+                        name: 'Sofa Hub',
+                        description: 'E-commerce furniture platform with 3D product visualization, wishlist, and secure checkout.',
+                        tech: ['React', 'Django', 'PostgreSQL', 'Stripe', '3D Viewer'],
+                        link: 'https://sofahub.co.ke',
+                        stars: [
+                            { x: 0.17, y: 0.27, brightness: 0 },
+                            { x: 0.22, y: 0.30, brightness: 0 },
+                            { x: 0.20, y: 0.34, brightness: 0 }
                         ]
                     }
                 ]
@@ -356,68 +399,6 @@
                     }
                 ]
             },
-            {
-                name: 'ai',
-                label: 'AI Constellation',
-                x: 0.8,
-                y: 0.2,
-                color: '#a78bfa',
-                projects: [
-                    {
-                        name: 'Smart Recommendation Engine',
-                        description: 'Machine learning system for personalized content recommendations using collaborative filtering.',
-                        tech: ['Python', 'TensorFlow', 'Pandas', 'FastAPI'],
-                        link: '#',
-                        stars: [
-                            { x: 0.77, y: 0.17, brightness: 0 },
-                            { x: 0.82, y: 0.19, brightness: 0 },
-                            { x: 0.79, y: 0.22, brightness: 0 },
-                            { x: 0.83, y: 0.24, brightness: 0 }
-                        ]
-                    }
-                ]
-            },
-           {
-    name: 'devops',
-    label: 'DevOps Constellation',
-    x: 0.3,  // Changed from 0.8
-    y: 0.8,  // Changed from 0.2
-    color: '#ff9e64',  // Changed color to orange to distinguish from AI
-    projects: [
-        {
-            name: 'Cloud Security Projects',
-            description: 'Various cloud security implementations including IAM policies and network security configurations.',
-            tech: ['AWS', 'Terraform', 'Docker', 'Kubernetes'],
-            link: '#',
-            stars: [
-                { x: 0.27, y: 0.77, brightness: 0 },  // Adjusted star positions
-                { x: 0.32, y: 0.79, brightness: 0 },
-                { x: 0.29, y: 0.83, brightness: 0 }
-            ]
-        }
-    ]
-},
-            
-            {
-                name: 'tools',
-                label: 'DevTools Sector',
-                x: 0.3,
-                y: 0.6,
-                color: '#6ee7b7',
-                projects: [
-                    {
-                        name: 'Build Optimizer',
-                        description: 'Custom tools for automating business processes and data management.',
-                        tech: ['Python', 'Bash', 'CI/CD', 'Git'],
-                        link: '#',
-                        stars: [
-                            { x: 0.27, y: 0.57, brightness: 0 },
-                            { x: 0.32, y: 0.59, brightness: 0 },
-                            { x: 0.29, y: 0.63, brightness: 0 }
-                        ]
-                    }
-                ]
-            }
         ];
 
         // Background stars
